@@ -29,6 +29,8 @@
                                 <x-nav-link href="/" :active="request()->is('/')">Home Page</x-nav-link>
                                 <x-nav-link href="/jobs" :active="request()->is('jobs')">Jobs Page</x-nav-link>
                                 <x-nav-link href="/contact" :active="request()->is('contact')">Contact Page</x-nav-link>
+                                <x-nav-link href="/jobs/create" :active="request()->is('jobs/create')">Create Job Page</x-nav-link>
+
 
 
                             </div>
