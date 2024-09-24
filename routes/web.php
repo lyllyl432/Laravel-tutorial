@@ -1,67 +1,20 @@
 <?php
 
-
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Job;
+use Illuminate\Queue\Events\JobTimedOut;
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::view('/', 'home');
+Route::view('/contact', 'contact');
 
-Route::get('/contact', function () {
-    return view('contact');
-});
-//show index job
-Route::get('/jobs', function () {
-    $jobs = Job::with('employer')->latest()->paginate(3);
-    return view('jobs.index', ['jobs' => $jobs]);
-});
-//show create job form
-Route::get('/jobs/create', function () {
-    return view('jobs.create');
-});
-//show specific job
-Route::get('/jobs/{id}', function ($id) {
-    return view('jobs.show', ['job' => Job::find($id)]);
-});
-//create job
-Route::post('/jobs', function () {
-    request()->validate([
-        'title' => ['required', 'min:3'],
-        'salary' => ['required'],
-    ]);
-    Job::create([
-        'title' => request('title'),
-        'salary' => request('salary'),
-        'employer_id' => 1
-    ]);
-    return redirect('/jobs');
-});
-//edit job 
-Route::get('/jobs/{id}/edit', function ($id) {
-    $job = Job::find($id);
-    return view('jobs.edit', ['job' => $job]);
-});
-// update Job 
-Route::patch('/jobs/{id}', function ($id) {
-    request()->validate([
-        'title' => ['required', 'min:3'],
-        'salary' => ['required'],
-    ]);
-
-    $job = Job::findOrFail($id);
-
-    $job->update([
-        'title' => request('title'),
-        'salary' => request('salary')
-    ]);
-
-    return redirect('/jobs/' . $id);
-});
-// delete Job 
-Route::delete('/jobs/{id}', function ($id) {
-    $job = Job::findOrFail($id);
-    $job->delete();
-
-    return redirect('/jobs');
-});
+// Route::controller(JobController::class)->group(function () {
+//     Route::get('/jobs',  'index');
+//     Route::get('/jobs/create',  'createJobForm');
+//     Route::get('/jobs/{job}',  'showSpecificJob');
+//     Route::post('/jobs',  'createJob');
+//     Route::get('/jobs/{job}/edit',  'updateJobForm');
+//     Route::patch('/jobs/{job}',  'updateJob');
+//     Route::delete('/jobs/{job}',  'deleteJob');
+// });
+Route::resource('jobs', JobController::class);
